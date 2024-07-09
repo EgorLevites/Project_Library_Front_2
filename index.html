@@ -21,13 +21,13 @@
                     <a class="nav-link" href="#" onclick="showSection('home')">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('search')">Search</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showSection('about')">About</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto" id="nav-logged-in" style="display: none;">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('search')" id="nav-search">Search</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showUserProfile()">Profile</a>
                 </li>
@@ -37,6 +37,7 @@
             </ul>
         </div>
     </nav>
+    
     <div class="container mt-5">
         <h1 class="text-center">Library Management</h1>
         <div id="home">
@@ -83,4 +84,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
