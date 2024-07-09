@@ -15,11 +15,11 @@ const aboutSection = document.getElementById('about');
 
 document.getElementById('login-btn').addEventListener('click', toggleLoginForm);
 document.getElementById('register-btn').addEventListener('click', toggleRegisterForm);
-document.getElementById('search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const query = document.getElementById('search-query').value;
-    searchBooks(query);
-});
+// document.getElementById('search-form').addEventListener('submit', function(event) {
+//     event.preventDefault();
+//     const query = document.getElementById('search-query').value;
+//     searchBooks(query);
+// });
 
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
@@ -64,6 +64,16 @@ document.body.addEventListener('click', function(event) {
         returnBook(event.target.dataset.loanedBookId);
     }
 });
+document.body.addEventListener('click', function(event) {
+    if (event.target.id === 'add-book-btn') {
+        showAddBookForm();
+    }
+});
+
+
+// Add event listener for the profile button
+document.querySelector('.nav-link[onclick="showUserProfile()"]').addEventListener('click', showUserProfile);
+
 
 
 // Initial Load
@@ -240,6 +250,7 @@ function showAllBooks(isAdmin) {
                         <button class="btn btn-info" id="show-all-users-btn">Show All Users</button>
                         <button class="btn btn-info" id="show-all-loaned-books-btn">Show All Loaned Books</button>
                         <button class="btn btn-info" id="show-all-late-loans-btn">Show All Late Loans</button>
+                        <button class="btn btn-success" id="add-book-btn">Add Book</button>
                     </div>
                 `;
             }
@@ -292,10 +303,6 @@ function showAllBooks(isAdmin) {
         alert('Error fetching books');
     });
 }
-
-
-
-
 
 function loanBook(bookId) {
     const token = localStorage.getItem('token');
@@ -361,7 +368,9 @@ function showUserProfile() {
     })
     .then(response => {
         const user = response.data;
+        const userProfile = document.getElementById('user-profile');
         userProfile.innerHTML = `
+            <span class="close-btn" onclick="closeUserProfile()">&times;</span>
             <h3>User Profile</h3>
             <p>Email: ${user.email}</p>
             <p>Full Name: ${user.full_name}</p>
@@ -369,14 +378,22 @@ function showUserProfile() {
             <p>Role: ${user.role}</p>
         `;
         userProfile.style.display = 'block';
-        authContent.style.display = 'none';
-        carouselContainer.style.display = 'none';
-        formContent.innerHTML = '';
     })
     .catch(error => {
-        console.error('There was an error loading the user profile!', error);
+        console.error('There was an error fetching the user profile!', error);
         alert('Error loading user profile');
     });
+}
+
+function closeUserProfile() {
+    const userProfile = document.getElementById('user-profile');
+    userProfile.style.display = 'none';
+}
+
+
+function closeUserProfile() {
+    const userProfile = document.getElementById('user-profile');
+    userProfile.style.display = 'none';
 }
 
 function logout() {
@@ -395,61 +412,21 @@ function logout() {
     showSection('home'); // Redirect to the home section
 }
 
-
-
-function searchBooks(query) {
-    axios.get(`${apiUrl}/books`)
-        .then(response => {
-            const books = response.data;
-            const filteredBooks = books.filter(book => book.name.toLowerCase().includes(query.toLowerCase()));
-            let html = '';
-            if (filteredBooks.length > 0) {
-                for (let i = 0; i < filteredBooks.length; i += 5) {
-                    html += '<div class="row">';
-                    for (let j = i; j < i + 5 && j < filteredBooks.length; j++) {
-                        html += `
-                            <div class="col-md-2 custom-col-2-4 col-sm-4 col-6">
-                                <div class="card mb-4">
-                                    <img src="${apiUrl}/media/${filteredBooks[j].filename}" class="card-img-top" alt="${filteredBooks[j].name}">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${filteredBooks[j].name}</h5>
-                                        <p class="card-text">Author: ${filteredBooks[j].author}</p>
-                                        <p class="card-text">Year Published: ${filteredBooks[j].year_published}</p>
-                                        <button class="btn btn-primary loan-btn" data-book-id="${filteredBooks[j].id}">Loan</button>
-                                        <button class="btn btn-secondary return-btn" data-loaned-book-id="${filteredBooks[j].loaned_book_id}" style="display: none;">Return</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    html += '</div>';
-                }
-            } else {
-                html = '<p>No books found.</p>';
-            }
-            document.getElementById('search-results').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('There was an error fetching the books!', error);
-            alert('Error fetching books');
-        });
-}
-
 function showSection(section) {
-    const sections = ['home', 'search', 'about'];
+    const sections = ['home', 'about'];
     sections.forEach(sec => {
         document.getElementById(sec).style.display = sec === section ? 'block' : 'none';
     });
     if (section === 'home') {
-        authContent.style.display = 'block';
-        carouselContainer.style.display = 'block';
+        document.getElementById('auth-content').style.display = 'block';
+        document.getElementById('carousel-container').style.display = 'block';
     } else {
-        authContent.style.display = 'none';
-        carouselContainer.style.display = 'none';
+        document.getElementById('auth-content').style.display = 'none';
+        document.getElementById('carousel-container').style.display = 'none';
     }
-    formContent.innerHTML = '';
-    bookContent.innerHTML = '';
-    userProfile.style.display = 'none';
+    document.getElementById('form-content').innerHTML = '';
+    document.getElementById('book-content').innerHTML = '';
+    document.getElementById('user-profile').style.display = 'none';
 }
 
 function toggleAdminPasswordField() {
@@ -542,6 +519,13 @@ function removeBook(bookId) {
 }
 
 function showAllUsers() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h2>All Users</h2>
+        <div id="users-list" class="row"></div>
+    `;
+    formContent.classList.add('active');
+
     const token = localStorage.getItem('token');
     axios.get(`${apiUrl}/display_all_users`, {
         headers: {
@@ -550,7 +534,7 @@ function showAllUsers() {
     })
     .then(response => {
         const users = response.data;
-        let html = '<h2>All Users</h2><div class="row">';
+        let html = '';
         if (users.length > 0) {
             users.forEach(user => {
                 html += `
@@ -566,11 +550,10 @@ function showAllUsers() {
                     </div>
                 `;
             });
-            html += '</div>';
         } else {
             html += '<p>No active users found.</p>';
         }
-        document.getElementById('book-content').innerHTML = html;
+        document.getElementById('users-list').innerHTML = html;
     })
     .catch(error => {
         console.error('There was an error fetching the users!', error);
@@ -579,7 +562,59 @@ function showAllUsers() {
 }
 
 
+function showAllLoanedBooks() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h2>All Loaned Books</h2>
+        <div id="loaned-books-list" class="row"></div>
+    `;
+    formContent.classList.add('active');
+
+    const token = localStorage.getItem('token');
+    axios.get(`${apiUrl}/display_active_loaned_books`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const loanedBooks = response.data;
+        let html = '';
+        if (loanedBooks.length > 0) {
+            loanedBooks.forEach(book => {
+                html += `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">${book.book_name}</h5>
+                                <p class="card-text">Author: ${book.author}</p>
+                                <p class="card-text">Loaned By: ${book.user_name}</p>
+                                <p class="card-text">Loan Date: ${book.loan_date}</p>
+                                <p class="card-text">Return Date: ${book.return_date}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            html += '<p>No loaned books found.</p>';
+        }
+        document.getElementById('loaned-books-list').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('There was an error fetching the loaned books!', error);
+        alert('Error fetching loaned books');
+    });
+}
+
+
 function showAllLateLoans() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h2>All Late Loans</h2>
+        <div id="late-loans-list" class="row"></div>
+    `;
+    formContent.classList.add('active');
+
     const token = localStorage.getItem('token');
     axios.get(`${apiUrl}/display_late_loans`, {
         headers: {
@@ -588,9 +623,8 @@ function showAllLateLoans() {
     })
     .then(response => {
         const lateLoans = response.data;
-        let html = '<h2>All Late Loans</h2>';
+        let html = '';
         if (lateLoans.length > 0) {
-            html += '<div class="row">';
             lateLoans.forEach(loan => {
                 html += `
                     <div class="col-md-4 col-sm-6">
@@ -606,11 +640,10 @@ function showAllLateLoans() {
                     </div>
                 `;
             });
-            html += '</div>';
         } else {
             html += '<p>No expired loans.</p>';
         }
-        document.getElementById('book-content').innerHTML = html;
+        document.getElementById('late-loans-list').innerHTML = html;
     })
     .catch(error => {
         console.error('There was an error fetching the late loans!', error);
@@ -618,37 +651,84 @@ function showAllLateLoans() {
     });
 }
 
-function showAllLoanedBooks() {
+function closeForm() {
+    formContent.classList.remove('active');
+    formContent.innerHTML = '';
+}
+
+function showAddBookForm() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h3>Add Book</h3>
+        <form id="add-book-form">
+            <div class="form-group">
+                <label for="book-name">Book Name</label>
+                <input type="text" class="form-control" id="book-name" required>
+            </div>
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" class="form-control" id="author" required>
+            </div>
+            <div class="form-group">
+                <label for="year-published">Year Published</label>
+                <input type="number" class="form-control" id="year-published" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select class="form-control" id="type" required>
+                    <option value="1">Loan for 10 days</option>
+                    <option value="2">Loan for 30 days</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" class="form-control" id="image">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Book</button>
+        </form>
+    `;
+    formContent.classList.add('active');
+    document.getElementById('add-book-form').addEventListener('submit', addBook);
+}
+
+
+function addBook(event) {
+    event.preventDefault();
+
+    const bookData = {
+        name: document.getElementById('book-name').value,
+        author: document.getElementById('author').value,
+        year_published: document.getElementById('year-published').value,
+        type: document.getElementById('type').value
+    };
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(bookData));
+
+    const imageInput = document.getElementById('image');
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
+    }
+
     const token = localStorage.getItem('token');
-    axios.get(`${apiUrl}/display_active_loaned_books`, {
+    axios.post(`${apiUrl}/add_book`, formData, {
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
         }
     })
     .then(response => {
-        const loanedBooks = response.data;
-        let html = '<h2>All Loaned Books</h2><div class="row">';
-        loanedBooks.forEach(book => {
-            html += `
-                <div class="col-md-4 col-sm-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">${book.book_name}</h5>
-                            <p class="card-text">Author: ${book.author}</p>
-                            <p class="card-text">Loaned By: ${book.user_name}</p>
-                            <p class="card-text">Loan Date: ${book.loan_date}</p>
-                            <p class="card-text">Return Date: ${book.return_date}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        html += '</div>';
-        document.getElementById('book-content').innerHTML = html;
+        alert('Book added successfully!');
+        closeForm();
+        showAllBooks(true); // Refresh the list of books
     })
     .catch(error => {
-        console.error('There was an error fetching the loaned books!', error);
-        alert('Error fetching loaned books');
+        console.error('There was an error adding the book!', error.response);
+        if (error.response && error.response.data && error.response.data.message) {
+            alert('Error adding book: ' + error.response.data.message);
+        } else {
+            alert('Error adding book. Please check the console for details.');
+        }
     });
 }
 
