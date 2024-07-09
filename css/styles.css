@@ -239,3 +239,29 @@ h1, h2, h3 {
     flex: 0 0 20%; /* Each column takes up 20% of the width */
     max-width: 20%;
 }
+
+#form-content {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other elements */
+    width: 400px; /* Set a fixed width for the form */
+    max-width: 90%; /* Ensure it doesn't overflow on small screens */
+}
+
+#form-content.active {
+    display: block; /* Show the form when active */
+}
+
+#form-content .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}

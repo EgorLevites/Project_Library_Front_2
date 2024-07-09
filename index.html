@@ -16,7 +16,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto" id="nav-logged-out">
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showSection('home')">Home</a>
                 </li>
@@ -27,6 +27,14 @@
                     <a class="nav-link" href="#" onclick="showSection('about')">About</a>
                 </li>
             </ul>
+            <ul class="navbar-nav ml-auto" id="nav-logged-in" style="display: none;">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showUserProfile()">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                </li>
+            </ul>
         </div>
     </nav>
     <div class="container mt-5">
@@ -34,9 +42,9 @@
         <div id="home">
             <div id="auth-content" class="mt-4 text-center">
                 <h2>Welcome to the Library</h2>
-                <p>Discover a world of knowledge and adventure through our extensive collection of books. Please login or register to explore further.</p>
+                <p>Discover a world of knowledge and adventure through our extensive collection of books. Please login or sign in to explore further.</p>
                 <button id="login-btn" class="btn btn-primary mr-2">Login</button>
-                <button id="register-btn" class="btn btn-secondary">Register</button>
+                <button id="register-btn" class="btn btn-secondary">Sign In</button>
             </div>
             <div id="carousel-container" class="mt-4"></div>
         </div>

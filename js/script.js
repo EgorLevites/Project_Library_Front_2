@@ -25,20 +25,85 @@ document.addEventListener('DOMContentLoaded', viewBooksCarousel);
 
 // Helper Functions
 function toggleLoginForm() {
-    if (formContent.innerHTML.trim() === '' || formContent.innerHTML.includes('Register')) {
+    if (!formContent.classList.contains('active') || formContent.innerHTML.includes('Sign In')) {
         showLoginForm();
     } else {
-        formContent.innerHTML = '';
+        closeForm();
     }
 }
 
 function toggleRegisterForm() {
-    if (formContent.innerHTML.trim() === '' || formContent.innerHTML.includes('Login')) {
+    if (!formContent.classList.contains('active') || formContent.innerHTML.includes('Login')) {
         showRegisterForm();
     } else {
-        formContent.innerHTML = '';
+        closeForm();
     }
 }
+
+function showLoginForm() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h3>Login</h3>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    `;
+    formContent.classList.add('active');
+    document.getElementById('login-form').addEventListener('submit', login);
+}
+
+function showRegisterForm() {
+    formContent.innerHTML = `
+        <span class="close-btn" onclick="closeForm()">&times;</span>
+        <h3>Sign In</h3>
+        <form id="register-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" class="form-control" id="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" class="form-control" id="age" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" id="role" onchange="toggleAdminPasswordField()">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group" id="admin-password-field" style="display:none;">
+                <label for="admin_password">Admin Password (if applicable)</label>
+                <input type="password" class="form-control" id="admin_password">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+    `;
+    formContent.classList.add('active');
+    document.getElementById('register-form').addEventListener('submit', register);
+}
+
+function closeForm() {
+    formContent.classList.remove('active');
+    formContent.innerHTML = '';
+}
+
 
 function viewBooksCarousel() {
     axios.get(`${apiUrl}/books`)
@@ -100,61 +165,6 @@ function viewBooksCarousel() {
             console.error('There was an error fetching the books!', error);
             alert('Error fetching books');
         });
-}
-
-function showLoginForm() {
-    formContent.innerHTML = `
-        <h3>Login</h3>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-    `;
-    document.getElementById('login-form').addEventListener('submit', login);
-}
-
-function showRegisterForm() {
-    formContent.innerHTML = `
-        <h3>Register</h3>
-        <form id="register-form">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" required>
-            </div>
-            <div class="form-group">
-                <label for="full_name">Full Name</label>
-                <input type="text" class="form-control" id="full_name" required>
-            </div>
-            <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" class="form-control" id="age" required>
-            </div>
-            <div class="form-group">
-                <label for="role">Role</label>
-                <select class="form-control" id="role" onchange="toggleAdminPasswordField()">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <div class="form-group" id="admin-password-field" style="display:none;">
-                <label for="admin_password">Admin Password (if applicable)</label>
-                <input type="password" class="form-control" id="admin_password">
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    `;
-    document.getElementById('register-form').addEventListener('submit', register);
 }
 
 function toggleAdminPasswordField() {
@@ -285,4 +295,64 @@ function searchBooks(query) {
 }
 
 
+function login(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    axios.post(`${apiUrl}/login`, { email, password })
+        .then(response => {
+            const token = response.data.access_token;
+            localStorage.setItem('token', token);
+            alert('Login successful');
+            formContent.innerHTML = '';
+            authContent.style.display = 'none';
+            userProfile.style.display = 'none';
+            carouselContainer.style.display = 'none';
+            document.getElementById('nav-logged-out').style.display = 'none';
+            document.getElementById('nav-logged-in').style.display = 'flex';
+            closeForm();
+        })
+        .catch(error => {
+            console.error('There was an error logging in!', error);
+            alert('Invalid credentials');
+        });
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    document.getElementById('nav-logged-out').style.display = 'flex';
+    document.getElementById('nav-logged-in').style.display = 'none';
+    authContent.style.display = 'block';
+    carouselContainer.style.display = 'block';
+    userProfile.style.display = 'none';
+    alert('Logout successful');
+}
+
+function showUserProfile() {
+    const token = localStorage.getItem('token');
+    axios.get(`${apiUrl}/user`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const user = response.data;
+        userProfile.innerHTML = `
+            <h3>User Profile</h3>
+            <p>Email: ${user.email}</p>
+            <p>Full Name: ${user.full_name}</p>
+            <p>Age: ${user.age}</p>
+            <p>Role: ${user.role}</p>
+        `;
+        userProfile.style.display = 'block';
+        authContent.style.display = 'none';
+        carouselContainer.style.display = 'none';
+        formContent.innerHTML = '';
+    })
+    .catch(error => {
+        console.error('There was an error loading the user profile!', error);
+        alert('Error loading user profile');
+    });
+}
 
