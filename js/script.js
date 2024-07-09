@@ -232,6 +232,18 @@ function showAllBooks(isAdmin) {
         .then(userResponse => {
             const userBooks = userResponse.data.filter(book => book.loaned_by_user);
             let html = '<div class="row">';
+            
+            // Add admin buttons if the user is an admin
+            if (isAdmin) {
+                html += `
+                    <div class="col-12 mb-4">
+                        <button class="btn btn-info" id="show-all-users-btn">Show All Users</button>
+                        <button class="btn btn-info" id="show-all-loaned-books-btn">Show All Loaned Books</button>
+                        <button class="btn btn-info" id="show-all-late-loans-btn">Show All Late Loans</button>
+                    </div>
+                `;
+            }
+
             books.forEach(book => {
                 const userLoanedBook = userBooks.find(userBook => userBook.id === book.id);
                 html += `
@@ -264,6 +276,10 @@ function showAllBooks(isAdmin) {
                         removeBook(this.dataset.bookId);
                     });
                 });
+
+                document.getElementById('show-all-users-btn').addEventListener('click', showAllUsers);
+                document.getElementById('show-all-loaned-books-btn').addEventListener('click', showAllLoanedBooks);
+                document.getElementById('show-all-late-loans-btn').addEventListener('click', showAllLateLoans);
             }
         })
         .catch(error => {
@@ -276,6 +292,9 @@ function showAllBooks(isAdmin) {
         alert('Error fetching books');
     });
 }
+
+
+
 
 
 function loanBook(bookId) {
@@ -519,6 +538,117 @@ function removeBook(bookId) {
     .catch(error => {
         console.error('There was an error removing the book!', error);
         alert('Error removing book');
+    });
+}
+
+function showAllUsers() {
+    const token = localStorage.getItem('token');
+    axios.get(`${apiUrl}/display_all_users`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const users = response.data;
+        let html = '<h2>All Users</h2><div class="row">';
+        if (users.length > 0) {
+            users.forEach(user => {
+                html += `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">${user.full_name}</h5>
+                                <p class="card-text">Email: ${user.email}</p>
+                                <p class="card-text">Age: ${user.age}</p>
+                                <p class="card-text">Role: ${user.role}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        } else {
+            html += '<p>No active users found.</p>';
+        }
+        document.getElementById('book-content').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('There was an error fetching the users!', error);
+        alert('Error fetching users');
+    });
+}
+
+
+function showAllLateLoans() {
+    const token = localStorage.getItem('token');
+    axios.get(`${apiUrl}/display_late_loans`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const lateLoans = response.data;
+        let html = '<h2>All Late Loans</h2>';
+        if (lateLoans.length > 0) {
+            html += '<div class="row">';
+            lateLoans.forEach(loan => {
+                html += `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">${loan.book_name}</h5>
+                                <p class="card-text">Author: ${loan.author}</p>
+                                <p class="card-text">Loaned By: ${loan.user_name}</p>
+                                <p class="card-text">Loan Date: ${loan.loan_date}</p>
+                                <p class="card-text">Due Date: ${loan.return_date}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        } else {
+            html += '<p>No expired loans.</p>';
+        }
+        document.getElementById('book-content').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('There was an error fetching the late loans!', error);
+        alert('Error fetching late loans');
+    });
+}
+
+function showAllLoanedBooks() {
+    const token = localStorage.getItem('token');
+    axios.get(`${apiUrl}/display_active_loaned_books`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const loanedBooks = response.data;
+        let html = '<h2>All Loaned Books</h2><div class="row">';
+        loanedBooks.forEach(book => {
+            html += `
+                <div class="col-md-4 col-sm-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${book.book_name}</h5>
+                            <p class="card-text">Author: ${book.author}</p>
+                            <p class="card-text">Loaned By: ${book.user_name}</p>
+                            <p class="card-text">Loan Date: ${book.loan_date}</p>
+                            <p class="card-text">Return Date: ${book.return_date}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        document.getElementById('book-content').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('There was an error fetching the loaned books!', error);
+        alert('Error fetching loaned books');
     });
 }
 
