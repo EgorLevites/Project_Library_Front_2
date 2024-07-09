@@ -1,4 +1,4 @@
-const apiUrl = 'http://127.0.0.1:5000';
+const apiUrl = 'https://project-library-czbz.onrender.com';
 
 // Elements
 const authContent = document.getElementById('auth-content');
@@ -11,17 +11,11 @@ const userModalBody = document.getElementById('user-modal-body');
 const searchSection = document.getElementById('search');
 const aboutSection = document.getElementById('about');
 
-// Handlers
-
+// Event Handlers
 document.getElementById('login-btn').addEventListener('click', toggleLoginForm);
 document.getElementById('register-btn').addEventListener('click', toggleRegisterForm);
-// document.getElementById('search-form').addEventListener('submit', function(event) {
-//     event.preventDefault();
-//     const query = document.getElementById('search-query').value;
-//     searchBooks(query);
-// });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role'); // Retrieve user role from localStorage
 
@@ -37,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nav-logged-in').style.display = 'flex';
             authContent.style.display = 'none';
             carouselContainer.style.display = 'none';
-            
+
             if (role === 'admin') {
                 showAllBooks(true); // Fetch and display all books with admin controls
             } else {
@@ -57,29 +51,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-document.body.addEventListener('click', function(event) {
+// Event delegation for loan and return buttons
+document.body.addEventListener('click', function (event) {
     if (event.target.classList.contains('loan-btn')) {
         loanBook(event.target.dataset.bookId);
     } else if (event.target.classList.contains('return-btn')) {
         returnBook(event.target.dataset.loanedBookId);
     }
 });
-document.body.addEventListener('click', function(event) {
+
+// Event listener for add book button
+document.body.addEventListener('click', function (event) {
     if (event.target.id === 'add-book-btn') {
         showAddBookForm();
     }
 });
 
-
-// Add event listener for the profile button
+// Event listener for profile button
 document.querySelector('.nav-link[onclick="showUserProfile()"]').addEventListener('click', showUserProfile);
 
-
-
-// Initial Load
+// Initial load of books carousel
 document.addEventListener('DOMContentLoaded', viewBooksCarousel);
 
-// Helper Functions
+// Helper function to toggle login form
 function toggleLoginForm() {
     if (!formContent.classList.contains('active') || formContent.innerHTML.includes('Sign In')) {
         showLoginForm();
@@ -88,6 +82,7 @@ function toggleLoginForm() {
     }
 }
 
+// Helper function to toggle register form
 function toggleRegisterForm() {
     if (!formContent.classList.contains('active') || formContent.innerHTML.includes('Login')) {
         showRegisterForm();
@@ -96,6 +91,7 @@ function toggleRegisterForm() {
     }
 }
 
+// Display login form
 function showLoginForm() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -116,6 +112,7 @@ function showLoginForm() {
     document.getElementById('login-form').addEventListener('submit', login);
 }
 
+// Display register form
 function showRegisterForm() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -155,11 +152,13 @@ function showRegisterForm() {
     document.getElementById('register-form').addEventListener('submit', register);
 }
 
+// Close the currently displayed form
 function closeForm() {
     formContent.classList.remove('active');
     formContent.innerHTML = '';
 }
 
+// Handle user login
 function login(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
@@ -177,7 +176,7 @@ function login(event) {
             document.getElementById('nav-logged-out').style.display = 'none';
             document.getElementById('nav-logged-in').style.display = 'flex';
             closeForm();
-            
+
             axios.get(`${apiUrl}/user`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -203,7 +202,7 @@ function login(event) {
         });
 }
 
-
+// Handle user registration
 function register(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
@@ -225,6 +224,7 @@ function register(event) {
         });
 }
 
+// Fetch and display all books
 function showAllBooks(isAdmin) {
     const token = localStorage.getItem('token');
     axios.get(`${apiUrl}/books`, {
@@ -242,38 +242,38 @@ function showAllBooks(isAdmin) {
         .then(userResponse => {
             const userBooks = userResponse.data.filter(book => book.loaned_by_user);
             let html = '<div class="row">';
-            
+
             // Add admin buttons if the user is an admin
             if (isAdmin) {
                 html += `
-                    <div class="col-12 mb-4">
-                        <button class="btn btn-info" id="show-all-users-btn">Show All Users</button>
-                        <button class="btn btn-info" id="show-all-loaned-books-btn">Show All Loaned Books</button>
-                        <button class="btn btn-info" id="show-all-late-loans-btn">Show All Late Loans</button>
-                        <button class="btn btn-success" id="add-book-btn">Add Book</button>
-                    </div>
+                <div class="col-12 mb-4">
+                    <button class="btn btn-info" id="show-all-users-btn">Show All Users</button>
+                    <button class="btn btn-info" id="show-all-loaned-books-btn">Show All Loaned Books</button>
+                    <button class="btn btn-info" id="show-all-late-loans-btn">Show All Late Loans</button>
+                    <button class="btn btn-success" id="add-book-btn">Add Book</button>
+                </div>
                 `;
             }
 
             books.forEach(book => {
                 const userLoanedBook = userBooks.find(userBook => userBook.id === book.id);
                 html += `
-                    <div class="col-md-2 col-sm-4 col-6">
-                        <div class="card mb-4">
-                            <img src="${apiUrl}/media/${book.filename}" class="card-img-top" alt="${book.name}">
-                            <div class="card-body">
-                                <h5 class="card-title">${book.name}</h5>
-                                <p class="card-text">Author: ${book.author}</p>
-                                <p class="card-text">Year Published: ${book.year_published}</p>
-                                ${book.available ? 
-                                    (isAdmin ? `<button class="btn btn-danger remove-btn" data-book-id="${book.id}">Remove</button>` :
-                                    `<button class="btn btn-primary loan-btn" data-book-id="${book.id}">Loan</button>`) :
-                                    (userLoanedBook ? 
-                                        `<button class="btn btn-secondary return-btn" data-loaned-book-id="${userLoanedBook.id}">Return</button>` :
-                                        '<span class="text-danger">NOT AVAILABLE</span>')}
-                            </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="card mb-4">
+                        <img src="${apiUrl}/media/${book.filename}" class="card-img-top" alt="${book.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${book.name}</h5>
+                            <p class="card-text">Author: ${book.author}</p>
+                            <p class="card-text">Year Published: ${book.year_published}</p>
+                            ${book.available ?
+                            (isAdmin ? `<button class="btn btn-danger remove-btn" data-book-id="${book.id}">Remove</button>` :
+                                `<button class="btn btn-primary loan-btn" data-book-id="${book.id}">Loan</button>`) :
+                            (userLoanedBook ?
+                                `<button class="btn btn-secondary return-btn" data-loaned-book-id="${userLoanedBook.id}">Return</button>` :
+                                '<span class="text-danger">NOT AVAILABLE</span>')}
                         </div>
                     </div>
+                </div>
                 `;
             });
             html += '</div>';
@@ -283,7 +283,7 @@ function showAllBooks(isAdmin) {
             // Add event listeners for the "Remove" buttons if admin
             if (isAdmin) {
                 document.querySelectorAll('.remove-btn').forEach(button => {
-                    button.addEventListener('click', function() {
+                    button.addEventListener('click', function () {
                         removeBook(this.dataset.bookId);
                     });
                 });
@@ -304,6 +304,7 @@ function showAllBooks(isAdmin) {
     });
 }
 
+// Handle book loan
 function loanBook(bookId) {
     const token = localStorage.getItem('token');
     axios.post(`${apiUrl}/loan_book/${bookId}`, {}, {
@@ -326,7 +327,7 @@ function loanBook(bookId) {
             cardBody.appendChild(returnBtn);
 
             // Add event listener to the new return button
-            returnBtn.addEventListener('click', function() {
+            returnBtn.addEventListener('click', function () {
                 returnBook(bookId);
             });
         }
@@ -337,7 +338,7 @@ function loanBook(bookId) {
     });
 }
 
-
+// Handle book return
 function returnBook(loanedBookId) {
     const token = localStorage.getItem('token');
     axios.post(`${apiUrl}/return_book/${loanedBookId}`, {}, {
@@ -359,6 +360,7 @@ function returnBook(loanedBookId) {
     });
 }
 
+// Show user profile
 function showUserProfile() {
     const token = localStorage.getItem('token');
     axios.get(`${apiUrl}/user`, {
@@ -370,12 +372,12 @@ function showUserProfile() {
         const user = response.data;
         const userProfile = document.getElementById('user-profile');
         userProfile.innerHTML = `
-            <span class="close-btn" onclick="closeUserProfile()">&times;</span>
-            <h3>User Profile</h3>
-            <p>Email: ${user.email}</p>
-            <p>Full Name: ${user.full_name}</p>
-            <p>Age: ${user.age}</p>
-            <p>Role: ${user.role}</p>
+        <span class="close-btn" onclick="closeUserProfile()">&times;</span>
+        <h3>User Profile</h3>
+        <p>Email: ${user.email}</p>
+        <p>Full Name: ${user.full_name}</p>
+        <p>Age: ${user.age}</p>
+        <p>Role: ${user.role}</p>
         `;
         userProfile.style.display = 'block';
     })
@@ -385,17 +387,13 @@ function showUserProfile() {
     });
 }
 
+// Close user profile
 function closeUserProfile() {
     const userProfile = document.getElementById('user-profile');
     userProfile.style.display = 'none';
 }
 
-
-function closeUserProfile() {
-    const userProfile = document.getElementById('user-profile');
-    userProfile.style.display = 'none';
-}
-
+// Handle user logout
 function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role'); // Clear user role from localStorage
@@ -412,6 +410,7 @@ function logout() {
     showSection('home'); // Redirect to the home section
 }
 
+// Show specific section (home or about)
 function showSection(section) {
     const sections = ['home', 'about'];
     sections.forEach(sec => {
@@ -429,6 +428,7 @@ function showSection(section) {
     document.getElementById('user-profile').style.display = 'none';
 }
 
+// Toggle admin password field visibility
 function toggleAdminPasswordField() {
     const roleSelect = document.getElementById('role');
     const adminPasswordField = document.getElementById('admin-password-field');
@@ -439,68 +439,70 @@ function toggleAdminPasswordField() {
     }
 }
 
+// View books carousel
 function viewBooksCarousel() {
     axios.get(`${apiUrl}/books`)
-        .then(response => {
-            const books = response.data;
-            const totalSlides = Math.ceil(books.length / 5);
-            let html = `
-                <div id="booksCarousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
+    .then(response => {
+        const books = response.data;
+        const totalSlides = Math.ceil(books.length / 5);
+        let html = `
+            <div id="booksCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+        `;
+        for (let i = 0; i < books.length; i += 5) {
+            html += `
+                <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                    <div class="row">
             `;
-            for (let i = 0; i < books.length; i += 5) {
+            for (let j = i; j < i + 5 && j < books.length; j++) {
                 html += `
-                    <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                        <div class="row">
-                `;
-                for (let j = i; j < i + 5 && j < books.length; j++) {
-                    html += `
-                        <div class="col-md-2 col-sm-4">
-                            <div class="card mb-4">
-                                <img src="${apiUrl}/media/${books[j].filename}" class="card-img-top" alt="${books[j].name}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${books[j].name}</h5>
-                                    <p class="card-text">Author: ${books[j].author}</p>
-                                    <p class="card-text">Year Published: ${books[j].year_published}</p>
-                                </div>
+                    <div class="col-md-2 col-sm-4">
+                        <div class="card mb-4">
+                            <img src="${apiUrl}/media/${books[j].filename}" class="card-img-top" alt="${books[j].name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${books[j].name}</h5>
+                                <p class="card-text">Author: ${books[j].author}</p>
+                                <p class="card-text">Year Published: ${books[j].year_published}</p>
                             </div>
-                        </div>
-                    `;
-                }
-                html += `
                         </div>
                     </div>
                 `;
             }
             html += `
                     </div>
-                    <a class="carousel-control-prev custom-control-prev" href="#booksCarousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon custom-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next custom-control-next" href="#booksCarousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon custom-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                    <div class="carousel-slide-indicator text-center mt-2">
-                        <span id="carousel-slide-indicator">1/${totalSlides}</span>
-                    </div>
                 </div>
             `;
-            carouselContainer.innerHTML = html;
+        }
+        html += `
+                </div>
+                <a class="carousel-control-prev custom-control-prev" href="#booksCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon custom-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next custom-control-next" href="#booksCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon custom-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+                <div class="carousel-slide-indicator text-center mt-2">
+                    <span id="carousel-slide-indicator">1/${totalSlides}</span>
+                </div>
+            </div>
+        `;
+        carouselContainer.innerHTML = html;
 
-            $('#booksCarousel').on('slid.bs.carousel', function (e) {
-                const currentIndex = $(e.relatedTarget).index();
-                const slideNumber = currentIndex + 1;
-                document.getElementById('carousel-slide-indicator').textContent = `${slideNumber}/${totalSlides}`;
-            });
-        })
-        .catch(error => {
-            console.error('There was an error fetching the books!', error);
-            alert('Error fetching books');
+        $('#booksCarousel').on('slid.bs.carousel', function (e) {
+            const currentIndex = $(e.relatedTarget).index();
+            const slideNumber = currentIndex + 1;
+            document.getElementById('carousel-slide-indicator').textContent = `${slideNumber}/${totalSlides}`;
         });
+    })
+    .catch(error => {
+        console.error('There was an error fetching the books!', error);
+        alert('Error fetching books');
+    });
 }
 
+// Remove a book (admin only)
 function removeBook(bookId) {
     const token = localStorage.getItem('token');
     axios.post(`${apiUrl}/remove_book/${bookId}`, {}, {
@@ -518,6 +520,7 @@ function removeBook(bookId) {
     });
 }
 
+// Show all users (admin only)
 function showAllUsers() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -538,16 +541,16 @@ function showAllUsers() {
         if (users.length > 0) {
             users.forEach(user => {
                 html += `
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">${user.full_name}</h5>
-                                <p class="card-text">Email: ${user.email}</p>
-                                <p class="card-text">Age: ${user.age}</p>
-                                <p class="card-text">Role: ${user.role}</p>
-                            </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${user.full_name}</h5>
+                            <p class="card-text">Email: ${user.email}</p>
+                            <p class="card-text">Age: ${user.age}</p>
+                            <p class="card-text">Role: ${user.role}</p>
                         </div>
                     </div>
+                </div>
                 `;
             });
         } else {
@@ -561,7 +564,7 @@ function showAllUsers() {
     });
 }
 
-
+// Show all loaned books (admin only)
 function showAllLoanedBooks() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -582,17 +585,17 @@ function showAllLoanedBooks() {
         if (loanedBooks.length > 0) {
             loanedBooks.forEach(book => {
                 html += `
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">${book.book_name}</h5>
-                                <p class="card-text">Author: ${book.author}</p>
-                                <p class="card-text">Loaned By: ${book.user_name}</p>
-                                <p class="card-text">Loan Date: ${book.loan_date}</p>
-                                <p class="card-text">Return Date: ${book.return_date}</p>
-                            </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${book.book_name}</h5>
+                            <p class="card-text">Author: ${book.author}</p>
+                            <p class="card-text">Loaned By: ${book.user_name}</p>
+                            <p class="card-text">Loan Date: ${book.loan_date}</p>
+                            <p class="card-text">Return Date: ${book.return_date}</p>
                         </div>
                     </div>
+                </div>
                 `;
             });
         } else {
@@ -606,7 +609,7 @@ function showAllLoanedBooks() {
     });
 }
 
-
+// Show all late loans (admin only)
 function showAllLateLoans() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -627,17 +630,17 @@ function showAllLateLoans() {
         if (lateLoans.length > 0) {
             lateLoans.forEach(loan => {
                 html += `
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">${loan.book_name}</h5>
-                                <p class="card-text">Author: ${loan.author}</p>
-                                <p class="card-text">Loaned By: ${loan.user_name}</p>
-                                <p class="card-text">Loan Date: ${loan.loan_date}</p>
-                                <p class="card-text">Due Date: ${loan.return_date}</p>
-                            </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${loan.book_name}</h5>
+                            <p class="card-text">Author: ${loan.author}</p>
+                            <p class="card-text">Loaned By: ${loan.user_name}</p>
+                            <p class="card-text">Loan Date: ${loan.loan_date}</p>
+                            <p class="card-text">Due Date: ${loan.return_date}</p>
                         </div>
                     </div>
+                </div>
                 `;
             });
         } else {
@@ -651,11 +654,13 @@ function showAllLateLoans() {
     });
 }
 
+// Close the currently displayed form
 function closeForm() {
     formContent.classList.remove('active');
     formContent.innerHTML = '';
 }
 
+// Show add book form (admin only)
 function showAddBookForm() {
     formContent.innerHTML = `
         <span class="close-btn" onclick="closeForm()">&times;</span>
@@ -691,7 +696,7 @@ function showAddBookForm() {
     document.getElementById('add-book-form').addEventListener('submit', addBook);
 }
 
-
+// Handle add book form submission
 function addBook(event) {
     event.preventDefault();
 
@@ -731,4 +736,3 @@ function addBook(event) {
         }
     });
 }
-

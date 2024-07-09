@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Management</title>
+    <!-- Include Bootstrap CSS for styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Include Axios for HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="icon" href="img/library.png" type="image/x-icon">
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Library Management</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Navigation items for logged out users -->
             <ul class="navbar-nav ml-auto" id="nav-logged-out">
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showSection('home')">Home</a>
@@ -24,8 +28,8 @@
                     <a class="nav-link" href="#" onclick="showSection('about')">About</a>
                 </li>
             </ul>
+            <!-- Navigation items for logged in users -->
             <ul class="navbar-nav ml-auto" id="nav-logged-in" style="display: none;">
-
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showUserProfile()">Profile</a>
                 </li>
@@ -38,6 +42,7 @@
     
     <div class="container mt-5">
         <h1 class="text-center">Library Management</h1>
+        <!-- Home section -->
         <div id="home">
             <div id="auth-content" class="mt-4 text-center">
                 <h2>Welcome to the Library</h2>
@@ -47,9 +52,13 @@
             </div>
             <div id="carousel-container" class="mt-4"></div>
         </div>
+        <!-- Section for displaying forms (login, register, add book) -->
         <div id="form-content" class="mt-4"></div>
+        <!-- Section for displaying books -->
         <div id="book-content" class="mt-4"></div>
+        <!-- Section for displaying user profile -->
         <div id="user-profile" class="mt-4" style="display:none;"></div>
+        <!-- About section -->
         <div id="about" class="mt-4" style="display:none;">
             <h2>About</h2>
             <p>Welcome to our online library! We strive to provide you with access to a wide range of books and other materials to satisfy your reading and learning needs. Our goal is to create a convenient and accessible platform for all book lovers.</p>
@@ -64,10 +73,11 @@
             <div id="user-modal-body"></div>
         </div>
     </div>
+    <!-- Include the main script file -->
     <script src="js/script.js"></script>
+    <!-- Include Bootstrap JS and its dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
