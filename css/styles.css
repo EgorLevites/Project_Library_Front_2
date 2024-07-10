@@ -1,59 +1,63 @@
 body {
-    background-image: url('../img/background2.png'); /* Ensure this path is correct */
+    background-image: url('../img/macbook4.png'); /* Ensure this path is correct */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: 'Merriweather', serif;
-    color: #093a2ac6;
+    color: #ffffff;
 }
 
 .navbar {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-bottom: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-nav .nav-link {
-    color: #093a2ac6 !important;
+    color: #ffffff !important;
 }
 
 .container {
-    background-color: rgba(255, 255, 255, 0.85); /* Slightly opaque background for readability */
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly opaque background for readability */
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 1100px; /* Ensure it doesn't get too wide */
 }
 
 h1, h2, h3 {
-    color: #4a5d23;
+    color: #ffffff;
 }
 
 .btn-primary {
-    background-color: #6b8e23;
-    border-color: #6b8e23;
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000000;
 }
 
 .btn-primary:hover {
-    background-color: #556b2f;
-    border-color: #556b2f;
+    background-color: #e6b800;
+    border-color: #e6b800;
 }
 
 .btn-secondary {
-    background-color: #8b4513;
-    border-color: #8b4513;
+    background-color: #cc0000;
+    border-color: #cc0000;
+    color: #ffffff;
 }
 
 .btn-secondary:hover {
-    background-color: #a0522d;
-    border-color: #a0522d;
+    background-color: #b30000;
+    border-color: #b30000;
 }
 
 .card {
-    background-color: #fff8dc;
+    background-color: rgba(255, 255, 255, 0.1);
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out;
+    color: #ffffff;
 }
 
 .card:hover {
@@ -66,8 +70,8 @@ h1, h2, h3 {
 }
 
 .form-control:focus {
-    border-color: #6b8e23;
-    box-shadow: 0 0 0 0.2rem rgba(107, 142, 35, 0.25);
+    border-color: #ffcc00;
+    box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.25);
 }
 
 #user-profile-img, #usersContent img {
@@ -83,10 +87,10 @@ h1, h2, h3 {
     position: absolute;
     top: 80px; 
     right: 20px; 
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     z-index: 1000; /* Ensure it's above other elements */
     width: 300px; /* Set a fixed width for the profile */
     max-width: 60%; /* Ensure it doesn't overflow on small screens */
@@ -98,9 +102,8 @@ h1, h2, h3 {
     right: 10px;
     cursor: pointer;
     font-size: 24px;
+    color: #ffffff;
 }
-
-
 
 #booksContent .card, #usersContent .card {
     margin-bottom: 20px;
@@ -112,13 +115,14 @@ h1, h2, h3 {
 }
 
 #loansContent li, #lateLoansContent li {
-    background-color: #fff8dc;
-    border: 1px solid #ddd;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
+    color: #ffffff;
 }
 
 #loansContent img, #lateLoansContent img {
@@ -144,23 +148,23 @@ h1, h2, h3 {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: rgba(66, 37, 7, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .footer .container {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
 .footer-content {
     text-align: center;
-    padding: 10px 0;
-    color: #4a5d23;
+    padding: 15px 0;
+    color: #ffffff;
 }
 
 .card-late {
-    background-color: red;
+    background-color: rgba(255, 69, 0, 0.8);
 }
 
 .modal {
@@ -178,7 +182,8 @@ h1, h2, h3 {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -186,7 +191,7 @@ h1, h2, h3 {
 }
 
 .close {
-    color: #aaa;
+    color: #fff;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -194,7 +199,7 @@ h1, h2, h3 {
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #ccc;
     text-decoration: none;
     cursor: pointer;
 }
@@ -211,7 +216,7 @@ h1, h2, h3 {
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    background-color: black; /* Change this color as needed */
+    background-color: #ffcc00; /* Change the color to yellow */
     background-size: 100%, 100%;
     width: 30px;
     height: 30px;
@@ -243,9 +248,9 @@ h1, h2, h3 {
     height: 250px; /* Set a fixed height for images */
     object-fit: cover; /* Ensures the image fits within the area without being cut */
     object-position: center; /* Centers the image within the allocated space */
-    background-color: #f8f9fa; /* Add a background color to avoid empty space */
+    background-color: rgba(255, 255, 255, 0.1); /* Add a background color to avoid empty space */
     padding: 10px; /* Add some padding if needed */
-    border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+    border: 1px solid #444; /* Optional: Add a border for better visibility */
 }
 
 .carousel-slide-indicator {
@@ -270,10 +275,10 @@ h1, h2, h3 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     z-index: 1000; /* Ensure it's above other elements */
     width: 300px; /* Set a fixed width for the form */
     max-width: 60%; /* Ensure it doesn't overflow on small screens */
@@ -288,36 +293,11 @@ h1, h2, h3 {
     top: 10px;
     right: 10px;
     cursor: pointer;
-}
-
-/* Ensure the form content is centered and takes up a large portion of the display */
-#form-content.active {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-height: 80%;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    z-index: 1000;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-#form-content .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 24px;
-    cursor: pointer;
+    color: #ffffff;
 }
 
 #form-content h2 {
-    margin-top: 0;
-    text-align: center;
+    color: #ffffff;
 }
 
 #form-content .row {
@@ -337,7 +317,8 @@ h1, h2, h3 {
 }
 
 #form-content .card {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 #form-content .card-body {
@@ -347,7 +328,40 @@ h1, h2, h3 {
 #form-content .btn {
     margin-top: 10px;
     width: 100%;
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000000;
 }
+
+#form-content .btn:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
+
+/* Custom btn-info to match the LOGIN button style */
+.btn-info {
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000000;
+}
+
+.btn-info:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
+
+/* Custom btn-success to also match the LOGIN button style */
+.btn-success {
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000000;
+}
+
+.btn-success:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
+
 
 /* Media queries for responsive design */
 @media (max-width: 768px) {
